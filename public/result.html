@@ -2,16 +2,42 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Результат</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Результаты теста</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
 <div class="container card">
-    <h1>Результат теста</h1>
-    <p>Ваш результат: 8 / 10</p>
-    <a href="dashboard.html" class="btn">В кабинет</a>
+    <h1>Результаты теста</h1>
+    <div id="results">Загрузка...</div>
+    <a href="courses.html" class="btn">Назад к дисциплинам</a>
 </div>
 
+<script>
+async function loadResults() {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) return window.location.href = '/';
+
+    const params = new URLSearchParams(window.location.search);
+    const testId = params.get('id');
+    const courseId = params.get('course');
+
+    try {
+        const res = await fetch(`/courses/${courseId}/tests/${testId}/results`, {
+            headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+        if (res.status === 401) return window.location.href = '/';
+        const result = await res.json();
+        document.getElementById('results').innerHTML = result.answers.map(a => `
+            <p>Вопрос ID: ${a.questionId}, Ваш ответ: ${a.answer}, Правильный: ${a.correct}</p>
+        `).join('');
+    } catch (err) {
+        document.getElementById('results').innerText = 'Ошибка загрузки';
+        console.error(err);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadResults);
+</script>
 </body>
 </html>
