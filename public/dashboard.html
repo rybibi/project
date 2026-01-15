@@ -2,17 +2,53 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Кабинет</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Личный кабинет</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
 <div class="container card">
     <h1>Личный кабинет</h1>
-    <p>Пользователь: Иван Иванов</p>
-    <a href="courses.html" class="btn">Мои дисциплины</a>
-    <a href="index.html" class="btn">Выйти</a>
+    <div id="user-info">Загрузка...</div>
+    <a href="#" id="logout-btn" class="btn">Выйти</a>
 </div>
 
+<script>
+async function loadUser() {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) return window.location.href = '/';
+
+    try {
+        const res = await fetch('/user/me', {
+            headers: { 'Authorization': Bearer ${accessToken} }
+        });
+
+        if (res.status === 401) return window.location.href = '/';
+
+        const data = await res.json();
+        const info = document.getElementById('user-info');
+        info.innerHTML = `
+            <p>ФИО: ${data.fullName}</p>
+            <p>Роли: ${data.roles.join(', ')}</p>
+        `;
+    } catch (err) {
+        document.getElementById('user-info').innerText = 'Ошибка загрузки данных';
+        console.error(err);
+    }
+}
+
+document.getElementById('logout-btn').addEventListener('click', async () => {
+    const refreshToken = localStorage.getItem('refreshToken');
+    await fetch('/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken })
+    });
+    localStorage.clear();
+    window.location.href = '/';
+});
+
+document.addEventListener('DOMContentLoaded', loadUser);
+</script>
 </body>
 </html>
