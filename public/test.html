@@ -2,23 +2,78 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Тест</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
 <div class="container card">
-    <h1>Тест</h1>
-
-    <div class="question">
-        <p>1. Что такое переменная?</p>
-        <label><input type="radio" name="q1"> Ячейка памяти</label><br>
-        <label><input type="radio" name="q1"> Тип данных</label><br>
-        <label><input type="radio" name="q1"> Функция</label>
-    </div>
-
-    <a href="result.html" class="btn">Завершить тест</a>
+    <h1 id="test-title">Загрузка...</h1>
+    <form id="test-form"></form>
+    <button id="submit-test" class="btn">Отправить ответы</button>
+    <a href="#" id="back-btn" class="btn">Назад</a>
 </div>
 
+<script>
+async function loadTest() {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) return window.location.href = '/';
+
+    const params = new URLSearchParams(window.location.search);
+    const testId = params.get('id');
+    const courseId = params.get('course');
+    if (!testId || !courseId) return window.location.href = '/courses.html';
+
+    try {
+        const res = await fetch(/courses/${courseId}/tests/${testId}, {
+            headers: { 'Authorization': Bearer ${accessToken} }
+        });
+        if (res.status === 401) return window.location.href = '/';
+        const test = await res.json();
+        document.getElementById('test-title').innerText = test.name;
+
+        const form = document.getElementById('test-form');
+        form.innerHTML = test.questions.map((q, idx) => `
+            <div class="question">
+                <p>${idx + 1}. ${q.text}</p>
+                ${q.options.map((opt, i) => `
+                    <label>
+                        <input type="radio" name="q${q.id}" value="${i}"> ${opt}
+                    </label><br>
+                `).join('')}
+            </div>
+        `).join('');
+
+        document.getElementById('submit-test').onclick = async (e) => {
+            e.preventDefault();
+            const answers = test.questions.map(q => ({
+                questionId: q.id,
+                answer: Number(document.querySelector(`input[name="q${q.id}"]:checked`)?.value ?? -1)
+            }));
+            const res = await fetch(/courses/${courseId}/tests/${testId}/submit, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': Bearer ${accessToken} },
+                body: JSON.stringify({ answers })
+            });
+            if (res.status === 200) {
+                const result = await res.json();
+                window.location.href = result.html?id=${result.id}&course=${courseId};
+            } else {
+                alert('Ошибка при отправке ответов');
+            }
+        }
+
+        document.getElementById('back-btn').onclick = () => {
+            window.history.back();
+        }
+
+    } catch (err) {
+        document.getElementById('test-title').innerText = 'Ошибка загрузки';
+        console.error(err);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadTest);
+</script>
 </body>
 </html>
