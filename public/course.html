@@ -2,23 +2,49 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Дисциплина</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
 <div class="container card">
-    <h1>Основы программирования</h1>
-    <p>Описание дисциплины</p>
-
-    <h3>Тесты</h3>
-    <ul class="list">
-        <li><a href="test.html">Тест 1</a></li>
-        <li><a href="test.html">Тест 2</a></li>
-    </ul>
-
+    <h1 id="course-title">Загрузка...</h1>
+    <p id="course-desc"></p>
+    <ul id="tests-list" class="list"></ul>
     <a href="courses.html" class="btn">Назад</a>
 </div>
 
+<script>
+async function loadCourse() {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) return window.location.href = '/';
+
+    const params = new URLSearchParams(window.location.search);
+    const courseId = params.get('id');
+    if (!courseId) return window.location.href = '/courses.html';
+
+    try {
+        const res = await fetch(/courses/${courseId}, {
+            headers: { 'Authorization': Bearer ${accessToken} }
+        });
+        if (res.status === 401) return window.location.href = '/';
+        const course = await res.json();
+        document.getElementById('course-title').innerText = course.name;
+        document.getElementById('course-desc').innerText = course.description;
+
+        const testsList = document.getElementById('tests-list');
+        testsList.innerHTML = course.tests.map(t => `
+            <li>
+                <a href="test.html?id=${t.id}&course=${courseId}">${t.name}</a>
+            </li>
+        `).join('');
+    } catch (err) {
+        document.getElementById('course-title').innerText = 'Ошибка загрузки';
+        console.error(err);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadCourse);
+</script>
 </body>
 </html>
