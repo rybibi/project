@@ -2,19 +2,41 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Дисциплины</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
 <div class="container card">
-    <h1>Дисциплины</h1>
-    <ul class="list">
-        <li><a href="course.html">Основы программирования</a></li>
-        <li><a href="course.html">Базы данных</a></li>
-    </ul>
+    <h1>Мои дисциплины</h1>
+    <ul id="courses-list" class="list">Загрузка...</ul>
     <a href="dashboard.html" class="btn">Назад</a>
 </div>
 
+<script>
+async function loadCourses() {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) return window.location.href = '/';
+
+    try {
+        const res = await fetch('/courses', {
+            headers: { 'Authorization': Bearer ${accessToken} }
+        });
+        if (res.status === 401) return window.location.href = '/';
+        const courses = await res.json();
+        const list = document.getElementById('courses-list');
+        list.innerHTML = courses.map(c => `
+            <li>
+                <a href="course.html?id=${c.id}">${c.name}</a>
+            </li>
+        `).join('');
+    } catch (err) {
+        document.getElementById('courses-list').innerText = 'Ошибка загрузки';
+        console.error(err);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadCourses);
+</script>
 </body>
 </html>
