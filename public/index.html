@@ -1,31 +1,26 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Авторизация</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход в систему</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
-<div class="container">
-    <h1>Войти через</h1>
-
+  <div class="container card">
+    <h1>Вход в систему</h1>
     <div class="login-buttons">
-
-        <a href="/login?type=github" class="login-circle">
-            <img src="img/icon_git.png" alt="GitHub">
-        </a>
-
-        <a href="/login?type=yandex" class="login-circle">
-            <img src="img/icon_ya.png" alt="Yandex">
-        </a>
-
-        <a href="/login?type=code" class="login-circle">
-            <img src="img/icon_cod.png" alt="Code">
-        </a>
-
+      <div class="login-circle" id="login-github">
+        <img src="img/icon_git.png" alt="GitHub">
+      </div>
+      <div class="login-circle" id="login-ya">
+        <img src="img/icon_ya.png" alt="Яндекс">
+      </div>
+      <div class="login-circle" id="login-code">
+        <img src="img/icon_cod.png" alt="Код">
+      </div>
     </div>
-</div>
-
+  </div>
+  <script src="../js/auth.js"></script>
 </body>
 </html>
