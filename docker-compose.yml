@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  # Возвращаем Redis внутрь Docker
+  redis:
+    image: redis:alpine
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
+
+  web-client:
+    build: ./project-main
+    container_name: web_client
+    ports:
+      - "3000:3000"
+    environment:
+      # Теперь используем имя сервиса 'redis'
+      - REDIS_URL=redis://redis:6379
+      - AUTH_SERVICE_URL=http://host.docker.internal:8081
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - redis
