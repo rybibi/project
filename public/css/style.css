@@ -1,28 +1,55 @@
+/* Общие настройки */
 body {
     margin: 0;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     background: linear-gradient(135deg, #1e1e2f, #3b3b6d);
-    font-family: Montserrat, sans-serif;
+    font-family: 'Montserrat', sans-serif;
     color: white;
 }
 
-.container { text-align: center; }
-
-.card {
-    background: rgba(255,255,255,0.08);
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-    max-width: 420px;
+/* Контейнер для всех страниц */
+.container {
+    text-align: center;
+    width: 90%;
+    max-width: 480px;
+    padding: 20px;
 }
 
+/* Карточка контента */
+.card {
+    background: rgba(255,255,255,0.08);
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Заголовки */
+h1, h2 {
+    margin: 0;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 20px; /* Увеличенное расстояние до контента */
+}
+
+h2 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+}
+
+/* Кнопки логина */
 .login-buttons {
     display: flex;
     gap: 30px;
     justify-content: center;
+    margin-top: 20px;
 }
 
 .login-circle {
@@ -33,45 +60,163 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: 0.2s;
+    transition: transform 0.2s;
+    cursor: pointer;
 }
 
-.login-circle img { width: 60%; }
+.login-circle img { 
+    width: 60%; 
+}
 
-.login-circle:hover { transform: scale(1.1); }
+.login-circle:hover { 
+    transform: scale(1.1); 
+}
 
 .btn {
     display: inline-block;
-    margin: 10px;
+    margin: 10px 0;
     padding: 12px 22px;
     background: white;
     color: #222;
     border-radius: 10px;
     text-decoration: none;
     font-weight: bold;
+    cursor: pointer;
 }
 
-.btn:hover { background: #ddd; }
+.btn:hover { 
+    background: #ddd; 
+}
 
+/* Код для входа по коду */
 .code-box {
-    font-size: 48px;
+    font-size: 32px;
     font-weight: bold;
-    background: white;
-    color: #222;
-    padding: 20px 40px;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    padding: 15px 20px;
     border-radius: 12px;
     display: inline-block;
-    margin: 20px 0;
+    margin: 25px 0;
+    letter-spacing: 5px;
+    width: 220px;
+    text-align: center;
 }
 
-.list { list-style: none; padding: 0; }
+/* Список ссылок */
+.list { 
+    list-style: none; 
+    padding: 0; 
+    margin: 15px 0 0 0;
+}
 
-.list li { margin: 10px 0; }
+.list li { 
+    margin: 10px 0; 
+}
 
-.list a { color: white; text-decoration: none; }
+.list a { 
+    color: white; 
+    text-decoration: none; 
+}
 
-.list a:hover { text-decoration: underline; }
+.list a:hover { 
+    text-decoration: underline; 
+}
 
-.question { text-align: left; margin-top: 20px; }
+/* Вопросы на страницах тестов */
+.question { 
+    text-align: left; 
+    margin-top: 20px; 
+}
 
-.error h1 { color: #ff6b6b; }
+/* Ошибки */
+.error h1 { 
+    color: #ff6b6b; 
+}
+
+/* Поля ввода */
+input[type="text"], input[type="number"], input[type="password"] {
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+    margin: 10px 0;
+    width: 100%;
+    max-width: 250px;
+    text-align: center;
+}
+
+/* Адаптивность */
+@media (max-width: 500px) {
+    .login-buttons {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .code-box {
+        width: 180px;
+        font-size: 28px;
+        letter-spacing: 4px;
+    }
+
+    .card {
+        padding: 30px 20px;
+    }
+}
+/* Контейнер для ввода кода */
+.code-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    max-width: 400px;
+    width: 90%;
+}
+
+/* Поле ввода кода */
+.code-input {
+    padding: 12px 15px;
+    font-size: 20px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    width: 100%;
+    text-align: center;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    transition: background 0.2s ease;
+}
+
+.code-input:focus {
+    background: rgba(255,255,255,0.2);
+}
+
+/* Кнопка Войти */
+.btn-submit-code {
+    padding: 12px 25px;
+    background: #ffffff;
+    color: #222;
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 12px;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.btn-submit-code:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+}
+
+.btn-submit-code:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
