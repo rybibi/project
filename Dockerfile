@@ -1,22 +1,19 @@
-FROM golang:1.23
+FROM node:18-alpine
 
+# Указываем рабочую директорию внутри контейнера
 WORKDIR /app
 
-# Устанавливаем git через apt-get (так как у вас образ на базе Debian)
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+# Сначала копируем только файлы зависимостей (для ускорения сборки)
+COPY package*.json ./
 
-# Копируем зависимости
-COPY go.mod go.sum ./
+# Устанавливаем библиотеки
+RUN npm install
 
-# Разрешаем скачивать нужную версию Go автоматически
-ENV GOTOOLCHAIN=auto
-
-RUN go mod download || true
-
-# Копируем всё остальное
+# ТЕПЕРЬ КОПИРУЕМ ВСЕ ОСТАЛЬНЫЕ ФАЙЛЫ (server.js, папку public и т.д.)
 COPY . .
 
-# Собираем
-RUN go build -o main main.go
+# Открываем порт
+EXPOSE 3000
 
-CMD ["./main"]
+# Запускаем сервер
+CMD ["node", "server.js"]
