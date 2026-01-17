@@ -23,16 +23,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ code })
             });
 
-            const text = await res.text();
-
-            if (res.ok && text.trim() === "ok") {
-                statusEl.textContent = "Успешный вход!";
-                setTimeout(() => window.location.href = "dashboard.html", 500);
-            } else {
+            if (!res.ok) {
                 statusEl.textContent = "Неверный код";
+                return;
             }
 
+            const data = await res.json();
+
+            if (!data.accessToken) {
+                statusEl.textContent = "Ошибка сервера";
+                return;
+            }
+
+            localStorage.setItem("accessToken", data.accessToken);
+            localStorage.setItem("refreshToken", data.refreshToken);
+
+            statusEl.textContent = "Успешный вход!";
+            setTimeout(() => window.location.href = "dashboard.html", 500);
+
         } catch (e) {
+            status Paraguay
             statusEl.textContent = "Ошибка сервера";
         }
     });
