@@ -1,45 +1,19 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Вход по коду</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <title>Ввод кода</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div class="container">
-  <div class="code-container">
-    <h2>Введите код авторизации</h2>
-    <input type="text" class="code-input" placeholder="Ваш код" id="authCode">
-    <button class="btn-submit-code" id="submitCode">Войти</button>
-  </div>
+    <div class="card">
+        <h2>Введите код из Telegram</h2>
+        <input id="authCode" class="code-input" placeholder="123456" maxlength="6">
+        <button id="submitCode" class="btn">Войти</button>
+        <div id="status"></div>
+    </div>
 </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const storedCode = localStorage.getItem('auth_code');
-      if (storedCode) document.getElementById('auth-code').value = storedCode;
-
-      document.getElementById('submit-code').addEventListener('click', async () => {
-        const code = document.getElementById('auth-code').value;
-        const sessionToken = localStorage.getItem('sessionToken');
-
-        const res = await fetch(`/auth/code`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code, sessionToken })
-        });
-        const data = await res.json();
-
-        if (data.success) {
-          localStorage.setItem('accessToken', data.accessToken);
-          localStorage.setItem('refreshToken', data.refreshToken);
-          window.location.href = '/dashboard.html';
-        } else {
-          alert('Ошибка авторизации: ' + data.message);
-        }
-      });
-    });
-  </script>
+<script src="js/code.js"></script>
 </body>
 </html>
